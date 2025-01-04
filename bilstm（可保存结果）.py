@@ -12,15 +12,11 @@ from keras.preprocessing.sequence import pad_sequences
 import os
 import re
 import matplotlib.pyplot as plt
-
-
-import os
 import random
 import re
 import sys
 
-import numpy as np
-import pandas as pd
+
 from lightgbm.sklearn import LGBMClassifier
 from numpy import linalg as la
 from numpy.linalg import eig
@@ -87,10 +83,10 @@ for pid in mainTest["PID"]:
   else:
     mainTest["Tags"][i]=0
   i=i+1
-ACP_y_train = mainTrain["Tags"].values
-ACP_y_test = mainTest["Tags"].values
-ACP_y_train_ = np.array([np.array(i) for i in ACP_y_train])
-ACP_y_test_ = np.array([np.array(i) for i in ACP_y_test])
+AOP_y_train = mainTrain["Tags"].values
+AOP_y_test = mainTest["Tags"].values
+AOP_y_train_ = np.array([np.array(i) for i in AOP_y_train])
+AOP_y_test_ = np.array([np.array(i) for i in AOP_y_test])
 x_train = {}
 protein_index = 1
 for line in mainTrain["Seq"]:
@@ -3462,10 +3458,10 @@ skf = StratifiedKFold(n_splits=n_splits, shuffle=True)
 train_accuracies = []
 test_accuracies = []
 # 进行5倍交叉验证
-for train_index, test_index in skf.split(x_train_, ACP_y_train_):
+for train_index, test_index in skf.split(x_train_, AOP_y_train_):
     # 根据索引划分训练集和测试集
     X_train, X_val = x_train_[train_index], x_train_[test_index]
-    y_train, y_val = ACP_y_train_[train_index], ACP_y_train_[test_index]
+    y_train, y_val = AOP_y_train_[train_index], AOP_y_train_[test_index]
     HC_train, HC_val = hc_train[train_index], hc_train[test_index]
 #建立了一个基于BiLSTM的模型，结合了新的特征
 """Bilstm + new features"""
@@ -3531,10 +3527,10 @@ output_file = r'C:\Users\41822\Desktop\DL\结果\test_predictions3.csv'
 np.savetxt(output_file,predictions, delimiter=',')
 print("Test predictions saved to:", output_file)
 #评价指标
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("Bilstm + new features")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3580,15 +3576,15 @@ plot_history(hist)
 # 应用模型在测试集上进行预测
 predictions = model.predict(x_test_)
 predicted_labels = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, predicted_labels)
+accuracy = accuracy_score(AOP_y_test_, predicted_labels)
 # 保存预测结果到文件
 output_file = r'C:\Users\41822\Desktop\DL\结果\test_predictions4.csv'
 np.savetxt(output_file,predictions, delimiter=',')
 print("Test predictions saved to:", output_file)
 # 计算精确度、召回率和F1得分
-precision = precision_score(ACP_y_test_, predicted_labels)
-recall = recall_score(ACP_y_test_, predicted_labels)
-f1 = f1_score(ACP_y_test_, predicted_labels)
+precision = precision_score(AOP_y_test_, predicted_labels)
+recall = recall_score(AOP_y_test_, predicted_labels)
+f1 = f1_score(AOP_y_test_, predicted_labels)
 print("Bilstm")
 print("Testing Accuracy: {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3730,10 +3726,10 @@ plot_history(hist)
 #测试集测试
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': hc_test})
 rounded_predictions = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("Add+Bilstm + new features")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3776,10 +3772,10 @@ plot_history(hist)
 # 应用模型在测试集上进行预测
 predictions = model.predict(x_test_)
 predicted_labels = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, predicted_labels)
-precision = precision_score(ACP_y_test_, predicted_labels)
-recall = recall_score(ACP_y_test_, predicted_labels)
-f1 = f1_score(ACP_y_test_, predicted_labels)
+accuracy = accuracy_score(AOP_y_test_, predicted_labels)
+precision = precision_score(AOP_y_test_, predicted_labels)
+recall = recall_score(AOP_y_test_, predicted_labels)
+f1 = f1_score(AOP_y_test_, predicted_labels)
 print("Add+Bilstm")
 print("Testing Accuracy: {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3807,10 +3803,10 @@ def LGBM_SelectFeatures(X,y,i):#Light Gradient Boosting Machine Feature Selectio
 
     return  LGB_ALL_K
 
-SF_ALL_K_train=RF_SelectFeatures(hc_train,ACP_y_train_,1000)
-SF_ALL_K_test=RF_SelectFeatures(hc_test,ACP_y_test_,1000)
+SF_ALL_K_train=RF_SelectFeatures(hc_train,AOP_y_train_,1000)
+SF_ALL_K_test=RF_SelectFeatures(hc_test,AOP_y_test_,1000)
 
-X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,ACP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
+X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,AOP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
 
 main_input = Input((maxlen,),dtype='int32',name='main_input')
 x = Embedding(vocab_size, embedding_dim, input_length=maxlen,trainable=True)(main_input)
@@ -3842,10 +3838,10 @@ plot_history(hist)
 #测试集测试
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': SF_ALL_K_test})
 rounded_predictions = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("RF+Bilstm")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3855,10 +3851,10 @@ print("F1-score: {:.4f}".format(f1))
 
 """LGBM selector"""
 
-SF_ALL_K_train=LGBM_SelectFeatures(hc_train,ACP_y_train_,1000)
-SF_ALL_K_test=LGBM_SelectFeatures(hc_test,ACP_y_test_,1000)
+SF_ALL_K_train=LGBM_SelectFeatures(hc_train,AOP_y_train_,1000)
+SF_ALL_K_test=LGBM_SelectFeatures(hc_test,AOP_y_test_,1000)
 
-X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,ACP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
+X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,AOP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
 
 main_input = Input((maxlen,),dtype='int32',name='main_input')
 x = Embedding(vocab_size, embedding_dim, input_length=maxlen,trainable=True)(main_input)
@@ -3891,10 +3887,10 @@ plot_history(hist)
 #测试集测试
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': SF_ALL_K_test})
 rounded_predictions = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("LGBM+Bilstm")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))

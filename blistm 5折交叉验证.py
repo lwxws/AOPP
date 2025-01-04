@@ -91,10 +91,10 @@ for pid in mainTest["PID"]:
   else:
     mainTest["Tags"][i]=0
   i=i+1
-ACP_y_train = mainTrain["Tags"].values
-ACP_y_test = mainTest["Tags"].values
-ACP_y_train_ = np.array([np.array(i) for i in ACP_y_train])
-ACP_y_test_ = np.array([np.array(i) for i in ACP_y_test])
+AOP_y_train = mainTrain["Tags"].values
+AOP_y_test = mainTest["Tags"].values
+AOP_y_train_ = np.array([np.array(i) for i in AOP_y_train])
+AOP_y_test_ = np.array([np.array(i) for i in AOP_y_test])
 x_train = {}
 protein_index = 1
 for line in mainTrain["Seq"]:
@@ -3473,8 +3473,8 @@ def pca(X,k):
 hc_train = np.c_[hc_AAC_train,hc_DPC_train,hc_CKS_train,hc_AAI_train]
 hc_test= np.c_[hc_AAC_test,hc_DPC_test,hc_CKS_test,hc_AAI_test]
 
-hc_train=LGBM_SelectFeatures(hc_train ,ACP_y_train_,200)
-hc_test=LGBM_SelectFeatures(hc_test ,ACP_y_test_,200)
+hc_train=LGBM_SelectFeatures(hc_train ,AOP_y_train_,200)
+hc_test=LGBM_SelectFeatures(hc_test ,AOP_y_test_,200)
 
 print("融合")
 from sklearn.model_selection import StratifiedKFold
@@ -3492,10 +3492,10 @@ train_loss_list = []
 val_loss_list = []
 
 # 进行K折交叉验证
-for i, (train_index, val_index) in enumerate(kfold.split(x_train_, ACP_y_train_)):
+for i, (train_index, val_index) in enumerate(kfold.split(x_train_, AOP_y_train_)):
     # 根据索引拆分训练集和验证集
     X_train, X_val = x_train_[train_index], x_train_[val_index]
-    y_train, y_val = ACP_y_train_[train_index], ACP_y_train_[val_index]
+    y_train, y_val = AOP_y_train_[train_index], AOP_y_train_[val_index]
     HC_train, HC_val = hc_train[train_index], hc_train[val_index]
 
     # 建立了一个基于BiLSTM的模型，结合了新的特征
@@ -3573,14 +3573,14 @@ for fold in range(1, 6):
  predictions = model1.predict(x={'main_input': x_test_, 'aux_input': hc_test})
  rounded_predictions = (predictions > 0.5).astype(int)
  #评价指标
- accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
- precision = precision_score(ACP_y_test_, rounded_predictions)
- confusion_mat = confusion_matrix(ACP_y_test_, rounded_predictions)
+ accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+ precision = precision_score(AOP_y_test_, rounded_predictions)
+ confusion_mat = confusion_matrix(AOP_y_test_, rounded_predictions)
  tn, fp, fn, tp = confusion_mat.ravel()
  sensitivity = tp / (tp + fn)
  specificity = tn / (tn + fp)
- mcc = matthews_corrcoef(ACP_y_test_, rounded_predictions)
- auc = roc_auc_score(ACP_y_test_, rounded_predictions)
+ mcc = matthews_corrcoef(AOP_y_test_, rounded_predictions)
+ auc = roc_auc_score(AOP_y_test_, rounded_predictions)
  print("Model {}: ".format(fold))
  print("Testing Accuracy:  {:.4f}".format(accuracy))
  print("Precision: {:.4f}".format(precision))

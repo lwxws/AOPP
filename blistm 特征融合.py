@@ -88,10 +88,10 @@ for pid in mainTest["PID"]:
   else:
     mainTest["Tags"][i]=0
   i=i+1
-ACP_y_train = mainTrain["Tags"].values
-ACP_y_test = mainTest["Tags"].values
-ACP_y_train_ = np.array([np.array(i) for i in ACP_y_train])
-ACP_y_test_ = np.array([np.array(i) for i in ACP_y_test])
+AOP_y_train = mainTrain["Tags"].values
+AOP_y_test = mainTest["Tags"].values
+AOP_y_train_ = np.array([np.array(i) for i in AOP_y_train])
+AOP_y_test_ = np.array([np.array(i) for i in AOP_y_test])
 x_train = {}
 protein_index = 1
 for line in mainTrain["Seq"]:
@@ -3450,7 +3450,7 @@ hc_test = np.c_[hc_AAC_test,hc_DPC_test,hc_CKS_test,hc_AAI_test]
 
 """Train_test_split"""
 
-X_train,X_val,y_train,y_val,HC_train,HC_val,AL_train_, AL_val_,AL_pca_train_, AL_pca_val_ = train_test_split(x_train_,ACP_y_train_,hc_train,hC_AL_train,hC_pca_train,test_size=0.2,random_state=1)
+X_train,X_val,y_train,y_val,HC_train,HC_val,AL_train_, AL_val_,AL_pca_train_, AL_pca_val_ = train_test_split(x_train_,AOP_y_train_,hc_train,hC_AL_train,hC_pca_train,test_size=0.2,random_state=1)
 
 #建立了一个基于BiLSTM的模型，结合了新的特征
 """Bilstm + new features"""
@@ -3507,17 +3507,17 @@ plot_history(hist)
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': hc_test})
 rounded_predictions = (predictions > 0.5).astype(int)
 #评价指标
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("Bilstm + new features")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
 print("Recall: {:.4f}".format(recall))
 print("F1-score: {:.4f}".format(f1))
 #计算roc
-fpr, tpr, thresholds = roc_curve(ACP_y_test_, predictions)
+fpr, tpr, thresholds = roc_curve(AOP_y_test_, predictions)
 #计算auc并绘制曲线
 auc_score = auc(fpr, tpr)
 plt.plot(fpr, tpr, label='ROC curve (AUC = {:.2f})'.format(auc_score))
@@ -3583,17 +3583,17 @@ plot_history(hist)
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': hC_AL_test})
 rounded_predictions = (predictions > 0.5).astype(int)
 #评价指标
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("Bilstm + new features")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
 print("Recall: {:.4f}".format(recall))
 print("F1-score: {:.4f}".format(f1))
 #计算roc
-fpr, tpr, thresholds = roc_curve(ACP_y_test_, predictions)
+fpr, tpr, thresholds = roc_curve(AOP_y_test_, predictions)
 #计算auc并绘制曲线
 auc_score = auc(fpr, tpr)
 plt.plot(fpr, tpr, label='ROC curve (AUC = {:.2f})'.format(auc_score))
@@ -3659,17 +3659,17 @@ plot_history(hist)
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': hC_pca_test})
 rounded_predictions = (predictions > 0.5).astype(int)
 #评价指标
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("Bilstm + new features")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
 print("Recall: {:.4f}".format(recall))
 print("F1-score: {:.4f}".format(f1))
 #计算roc
-fpr, tpr, thresholds = roc_curve(ACP_y_test_, predictions)
+fpr, tpr, thresholds = roc_curve(AOP_y_test_, predictions)
 #计算auc并绘制曲线
 auc_score = auc(fpr, tpr)
 plt.plot(fpr, tpr, label='ROC curve (AUC = {:.2f})'.format(auc_score))
@@ -3717,18 +3717,18 @@ plot_history(hist)
 # 应用模型在测试集上进行预测
 predictions = model.predict(x_test_)
 predicted_labels = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, predicted_labels)
+accuracy = accuracy_score(AOP_y_test_, predicted_labels)
 # 计算精确度、召回率和F1得分
-precision = precision_score(ACP_y_test_, predicted_labels)
-recall = recall_score(ACP_y_test_, predicted_labels)
-f1 = f1_score(ACP_y_test_, predicted_labels)
+precision = precision_score(AOP_y_test_, predicted_labels)
+recall = recall_score(AOP_y_test_, predicted_labels)
+f1 = f1_score(AOP_y_test_, predicted_labels)
 print("Bilstm")
 print("Testing Accuracy: {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
 print("Recall: {:.4f}".format(recall))
 print("F1-score: {:.4f}".format(f1))
 #计算roc
-fpr, tpr, thresholds = roc_curve(ACP_y_test_, predictions)
+fpr, tpr, thresholds = roc_curve(AOP_y_test_, predictions)
 #计算auc并绘制曲线
 auc_score = auc(fpr, tpr)
 plt.plot(fpr, tpr, label='ROC curve (AUC = {:.2f})'.format(auc_score))
@@ -3870,10 +3870,10 @@ plot_history(hist)
 #测试集测试
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': hc_test})
 rounded_predictions = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("Add+Bilstm + new features")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3911,10 +3911,10 @@ plot_history(hist)
 # 应用模型在测试集上进行预测
 predictions = model.predict(x_test_)
 predicted_labels = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, predicted_labels)
-precision = precision_score(ACP_y_test_, predicted_labels)
-recall = recall_score(ACP_y_test_, predicted_labels)
-f1 = f1_score(ACP_y_test_, predicted_labels)
+accuracy = accuracy_score(AOP_y_test_, predicted_labels)
+precision = precision_score(AOP_y_test_, predicted_labels)
+recall = recall_score(AOP_y_test_, predicted_labels)
+f1 = f1_score(AOP_y_test_, predicted_labels)
 print("Add+Bilstm")
 print("Testing Accuracy: {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3942,10 +3942,10 @@ def LGBM_SelectFeatures(X,y,i):#Light Gradient Boosting Machine Feature Selectio
 
     return  LGB_ALL_K
 
-SF_ALL_K_train=RF_SelectFeatures(hc_train,ACP_y_train_,1000)
-SF_ALL_K_test=RF_SelectFeatures(hc_test,ACP_y_test_,1000)
+SF_ALL_K_train=RF_SelectFeatures(hc_train,AOP_y_train_,1000)
+SF_ALL_K_test=RF_SelectFeatures(hc_test,AOP_y_test_,1000)
 
-X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,ACP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
+X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,AOP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
 
 main_input = Input((maxlen,),dtype='int32',name='main_input')
 x = Embedding(vocab_size, embedding_dim, input_length=maxlen,trainable=True)(main_input)
@@ -3977,10 +3977,10 @@ plot_history(hist)
 #测试集测试
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': SF_ALL_K_test})
 rounded_predictions = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("RF+Bilstm")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
@@ -3990,10 +3990,10 @@ print("F1-score: {:.4f}".format(f1))
 
 """LGBM selector"""
 
-SF_ALL_K_train=LGBM_SelectFeatures(hc_train,ACP_y_train_,1000)
-SF_ALL_K_test=LGBM_SelectFeatures(hc_test,ACP_y_test_,1000)
+SF_ALL_K_train=LGBM_SelectFeatures(hc_train,AOP_y_train_,1000)
+SF_ALL_K_test=LGBM_SelectFeatures(hc_test,AOP_y_test_,1000)
 
-X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,ACP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
+X_train,X_val,y_train,y_val,HS_train,HS_val = train_test_split(x_train_,AOP_y_train_,SF_ALL_K_train,test_size=0.2,random_state=1)
 
 main_input = Input((maxlen,),dtype='int32',name='main_input')
 x = Embedding(vocab_size, embedding_dim, input_length=maxlen,trainable=True)(main_input)
@@ -4026,10 +4026,10 @@ plot_history(hist)
 #测试集测试
 predictions = model.predict(x={'main_input': x_test_, 'aux_input': SF_ALL_K_test})
 rounded_predictions = (predictions > 0.5).astype(int)
-accuracy = accuracy_score(ACP_y_test_, rounded_predictions)
-precision = precision_score(ACP_y_test_, rounded_predictions)
-recall = recall_score(ACP_y_test_, rounded_predictions)
-f1 = f1_score(ACP_y_test_, rounded_predictions)
+accuracy = accuracy_score(AOP_y_test_, rounded_predictions)
+precision = precision_score(AOP_y_test_, rounded_predictions)
+recall = recall_score(AOP_y_test_, rounded_predictions)
+f1 = f1_score(AOP_y_test_, rounded_predictions)
 print("LGBM+Bilstm")
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Precision: {:.4f}".format(precision))
